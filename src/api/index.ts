@@ -55,3 +55,10 @@ export const insertNewCourse = (data:object)=>{
         data: data
     })
 }
+
+export const selectCourseByLabel = (label:string)=>{
+    return request({
+        url:'http://localhost:8088/course/get?label='+label,
+        method: 'get',
+    })
+}
