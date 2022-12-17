@@ -18,3 +18,40 @@ export const getCourseNum = () =>{
         method: 'get'
     })
 };
+export const deleteCourse = (cno:string) =>{
+    return request({
+        url: 'http://localhost:8088/course/delete',
+        method: 'post',
+        data:{
+            'cno':cno
+        }
+    })
+};
+export const searchCourse = (cname:string, tname:string, dname:string) =>{
+    return request({
+        url: 'http://localhost:8088/course/search?cname='+cname+'&tname='+tname+'&dname='+dname,
+        method: 'get',
+    })
+};
+export const selectCourseByCno = (cno:string) =>{
+    return request({
+        url: 'http://localhost:8088/course/search?cno='+cno,
+        method: 'get',
+    })
+};
+
+export const updateCourseInfo = (course:object) =>{
+    return request({
+        url: 'http://localhost:8088/course/update',
+        method: 'post',
+        data:course
+    })
+};
+
+export const insertNewCourse = (data:object)=>{
+    return request({
+        url:'http://localhost:8088/course/new',
+        method: 'post',
+        data: data
+    })
+}

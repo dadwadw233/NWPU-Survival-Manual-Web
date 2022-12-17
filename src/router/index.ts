@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
                 path: '/table',
                 name: 'basetable',
                 meta: {
-                    title: '表格',
+                    title: '课程列表',
                     permiss: '2',
                 },
                 component: () => import(/* webpackChunkName: "table" */ '../views/table.vue'),

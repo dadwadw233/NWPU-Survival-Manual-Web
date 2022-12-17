@@ -2,12 +2,14 @@
 	<div>
 		<div class="container">
 			<div class="handle-box">
-				<el-input v-model="query.name" placeholder="课程名" class="handle-input mr10"></el-input>
-        <el-input v-model="query.name" placeholder="授课教师" class="handle-input mr10"></el-input>
-        <el-input v-model="query.name" placeholder="开课部门" class="handle-input mr10"></el-input>
+				<el-input v-model="query.cname" placeholder="课程名" class="handle-input mr10"></el-input>
+        <el-input v-model="query.tname" placeholder="授课教师" class="handle-input mr11"></el-input>
+        <el-input v-model="query.dname" placeholder="开课部门" class="handle-input mr12"></el-input>
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-
 			</div>
+      <div class="handle-box">
+        <el-button type="primary" @click="exportXlsx">导出所有课程</el-button>
+      </div>
 			<el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
 				<el-table-column prop="cno" label="课号" width="55" align="center"></el-table-column>
 				<el-table-column prop="cname" label="课名"></el-table-column>
@@ -20,6 +22,9 @@
 						<el-button text :icon="Edit" @click="handleEdit(scope.$index, scope.row)" v-permiss="15">
 							查看详情
 						</el-button>
+            <el-button text :icon="Delete" @click="handleDelete(scope.$index)" v-permiss="15">
+              删除课程
+            </el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -62,6 +67,8 @@ import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
 import { fetchData } from '../api/index';
 import {getCourseNum} from "../api/index";
 import {fetchDataLimit} from "../api/index";
+import {deleteCourse,searchCourse} from "../api/index";
+import * as XLSX from "xlsx";
 
 interface TableItem {
 	cno: string;
@@ -89,6 +96,7 @@ const query = reactive({
   pageIndex:1
 });
 const tableData = ref<TableItem[]>([]);
+const tableDataForExport = ref<TableItem[]>([]);
 const pageTotal = ref(0);
 // 获取表格数据
 const getData = () => {
@@ -103,14 +111,26 @@ getData();
 
 // 查询操作
 const handleSearch = () => {
-	//query.pageIndex = 1;
-	getData();
+	query.pageIndex = 1;
+  if(query.cname == '' && query.tname == '' && query.dname==''){
+    ElMessage.success('未设置搜索条件');
+    getData()
+  }else{
+    searchCourse(query.cname, query.tname, query.dname).then(res=>{
+      ElMessage.success(res.data.message);
+      tableData.value = res.data.data;
+      pageTotal.value = tableData.value.length
+    })
+  }
+
+
 };
 // 分页导航
 const handlePageChange = (val: number) => {
 	query.pageIndex = val;
   fetchDataLimit((query.pageSize*(val-1)).toString(), (query.pageSize).toString()).then(res=>{
       tableData.value = res.data.data;
+
   })
 };
 
@@ -121,8 +141,12 @@ const handleDelete = (index: number) => {
 		type: 'warning'
 	})
 		.then(() => {
-			ElMessage.success('删除成功');
-			tableData.value.splice(index, 1);
+      deleteCourse((tableData.value[index].cno)).then(res=>{
+        ElMessage.success(res.data);
+        tableData.value.splice(index, 1);
+        pageTotal.value = pageTotal.value-1
+      })
+
 		})
 		.catch(() => {});
 };
@@ -148,7 +172,28 @@ const saveEdit = () => {
 	tableData.value[idx].address = form.address;
 };
 */
+const list = [['ID','课号', '课名', '授课教师', '校区', '考查形式', '课程类别', '开课部门']];
+const exportXlsx = () => {
+  fetchData().then(res=>{
+    if(res.data.code == 200){
+      tableDataForExport.value = res.data.data
+      ElMessage.success('数据拉取成功');
+    }else{
+      ElMessage.error(res.data.code);
+    }
+    tableDataForExport.value.map((item: any, i: number) => {
+      const arr: any[] = [i+1];
+      arr.push(...[item.cno, item.cname, item.tname, item.campus, item.exam, item.cclf, item.dname]);
+      list.push(arr);
+    });
+    let WorkSheet = XLSX.utils.aoa_to_sheet(list);
+    let new_workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(new_workbook, WorkSheet, '第一页');
+    XLSX.writeFile(new_workbook, `课程清单.xlsx`)
+    ElMessage.success("数据导出成功");
+  })
 
+};
 
 </script>
 

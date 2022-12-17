@@ -74,11 +74,6 @@ const items = [
                 permiss: '2',
             },
             {
-                index: '/export',
-                title: '导出Excel',
-                permiss: '2',
-            },
-            {
                 index: '/newCourse',
                 title: '添加新课程',
                 permiss: '2',
@@ -88,7 +83,7 @@ const items = [
     {
         icon: 'Edit',
         index: '3',
-        title: '表单相关',
+        title: '管理员',
         permiss: '4',
         subs: [
             {

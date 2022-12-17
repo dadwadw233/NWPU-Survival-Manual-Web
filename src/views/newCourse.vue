@@ -2,61 +2,55 @@
   <div class="container">
     <div class="form-box">
       <el-form ref="formRef" :rules="rules" :model="form" label-width="80px">
-        <el-form-item label="表单名称" prop="name">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item label="课程号" prop="cno">
+          <el-input v-model="form.cno"></el-input>
         </el-form-item>
-        <el-form-item label="选择器" prop="region">
-          <el-select v-model="form.region" placeholder="请选择">
-            <el-option key="小明" label="小明" value="小明"></el-option>
-            <el-option key="小红" label="小红" value="小红"></el-option>
-            <el-option key="小白" label="小白" value="小白"></el-option>
+        <el-form-item label="课程名称" prop="cname">
+          <el-input v-model="form.cname"></el-input>
+        </el-form-item>
+        <el-form-item label="教师名称" prop="tname">
+          <el-input v-model="form.tname"></el-input>
+        </el-form-item>
+        <el-form-item label="开课部门" prop="dname">
+          <el-input v-model="form.dname"></el-input>
+        </el-form-item>
+        <el-form-item label="设置学分" prop="dname">
+          <el-input v-model="form.credit"></el-input>
+        </el-form-item>
+        <el-form-item label="课程类别" prop="cclf">
+          <el-select v-model="form.cclf" placeholder="请选择">
+            <el-option key="专业选修课" label="专业选修课" value="专业选修课"></el-option>
+            <el-option key="学科基础课程" label="学科基础课程" value="学科基础课程"></el-option>
+            <el-option key="大类通识课程" label="大类通识课程" value="大类通识课程"></el-option>
+            <el-option key="个性发展类课程" label="个性发展类课程" value="个性发展类课程"></el-option>
+            <el-option key="综合素养类课程" label="综合素养类课程" value="综合素养类课程"></el-option>
+            <el-option key="语言类" label="语言类" value="语言类"></el-option>
+            <el-option key="专业核心课程" label="专业核心课程" value="专业核心课程"></el-option>
+            <el-option key="数学与自然科学类" label="数学与自然科学类" value="数学与自然科学类"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="日期时间">
-          <el-col :span="11">
-            <el-form-item prop="date1">
-              <el-date-picker
-                  type="date"
-                  placeholder="选择日期"
-                  v-model="form.date1"
-                  style="width: 100%"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-form-item prop="date2">
-              <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%">
-              </el-time-picker>
-            </el-form-item>
-          </el-col>
+
+        <el-form-item label="是否考试" prop="exam">
+          <el-switch v-model="form.exam_"></el-switch>
         </el-form-item>
-        <el-form-item label="城市级联" prop="options">
-          <el-cascader :options="options" v-model="form.options"></el-cascader>
+        <el-form-item label="人数上限" prop="exam">
+          <el-slider v-model="form.slimit" :step="10" show-stops />
         </el-form-item>
-        <el-form-item label="选择开关" prop="delivery">
-          <el-switch v-model="form.delivery"></el-switch>
+        <el-form-item label="上课时间" prop="exam">
+          <el-input type="textarea" rows="3" v-model="form.csche"></el-input>
         </el-form-item>
-        <el-form-item label="多选框" prop="type">
-          <el-checkbox-group v-model="form.type">
-            <el-checkbox label="小明" name="type"></el-checkbox>
-            <el-checkbox label="小红" name="type"></el-checkbox>
-            <el-checkbox label="小白" name="type"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="单选框" prop="resource">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="小明"></el-radio>
-            <el-radio label="小红"></el-radio>
-            <el-radio label="小白"></el-radio>
+        <el-form-item label="开课校区" prop="campus">
+          <el-radio-group v-model="form.campus">
+            <el-radio label="长安校区"></el-radio>
+            <el-radio label="友谊校区"></el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="文本框" prop="desc">
-          <el-input type="textarea" rows="5" v-model="form.desc"></el-input>
+        <el-form-item label="课程描述" prop="description">
+          <el-input type="textarea" rows="5" v-model="form.description"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit(formRef)">表单提交</el-button>
-          <el-button @click="onReset(formRef)">重置表单</el-button>
+          <el-button type="primary" @click="onSubmit(formRef)">添加课程</el-button>
+          <el-button @click="onReset(formRef)">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -65,75 +59,34 @@
 
 <script setup lang="ts" name="baseform">
 import { reactive, ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import {ElMessage, ElMessageBox} from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
+import {deleteCourse, insertNewCourse, selectCourseByCno, updateCourseInfo} from "../api";
 
-const options = [
-  {
-    value: 'guangdong',
-    label: '广东省',
-    children: [
-      {
-        value: 'guangzhou',
-        label: '广州市',
-        children: [
-          {
-            value: 'tianhe',
-            label: '天河区',
-          },
-          {
-            value: 'haizhu',
-            label: '海珠区',
-          },
-        ],
-      },
-      {
-        value: 'dongguan',
-        label: '东莞市',
-        children: [
-          {
-            value: 'changan',
-            label: '长安镇',
-          },
-          {
-            value: 'humen',
-            label: '虎门镇',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 'hunan',
-    label: '湖南省',
-    children: [
-      {
-        value: 'changsha',
-        label: '长沙市',
-        children: [
-          {
-            value: 'yuelu',
-            label: '岳麓区',
-          },
-        ],
-      },
-    ],
-  },
-];
+
 const rules: FormRules = {
-  name: [{ required: true, message: '请输入表单名称', trigger: 'blur' }],
+  cno: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+  cname: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+  tname: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+  dname: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+  cclf: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+  credit: [{ required: true, message: '请输入内容', trigger: 'blur' }],
 };
 const formRef = ref<FormInstance>();
 const form = reactive({
-  name: '',
-  region: '',
-  date1: '',
-  date2: '',
-  delivery: true,
-  type: ['小明'],
-  resource: '小红',
-  desc: '',
-  options: [],
+  cno:'',
+  tname:'',
+  dname:'',
+  cname: '',
+  cclf: '',
+  credit:'',
+  campus:'',
+  exam_: false,
+  exam:'',
+  description:'',
+  csche:'',
+  slimit:'',
+
 });
 // 提交
 const onSubmit = (formEl: FormInstance | undefined) => {
@@ -142,7 +95,40 @@ const onSubmit = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       console.log(form);
-      ElMessage.success('提交成功！');
+      if(!form.exam_){
+        form.exam = '考察'
+      }else{
+        form.exam = '考试'
+      }
+      selectCourseByCno(form.cno).then(res=>{
+        //当前课程已经存在
+          if(res.data.data.length!=0){
+            ElMessageBox.confirm('当前课号已经存在，是否修改数据？', '提示', {
+              type: 'warning'
+            })
+                .then(() => {
+                  updateCourseInfo(form).then(res=>{
+                    if (res.data.code == 200){
+                      ElMessage.success(res.data.message);
+                    }else{
+                      ElMessage.error(res.data.message);
+                    }
+                  })
+                })
+                .catch(() => {});
+          }else{
+            insertNewCourse(form).then(res=>{
+              if (res.data.code == 200){
+                ElMessage.success(res.data.message);
+              }else{
+                ElMessage.error(res.data.message);
+              }
+            })
+          }
+      })
+
+
+
     } else {
       return false;
     }
@@ -153,4 +139,28 @@ const onReset = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };
+
 </script>
+<style scoped>
+.slider-demo-block {
+  display: flex;
+  align-items: center;
+}
+.slider-demo-block .el-slider {
+  margin-top: 0;
+  margin-left: 12px;
+}
+.slider-demo-block .demonstration {
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
+  line-height: 44px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 0;
+}
+.slider-demo-block .demonstration + .el-slider {
+  flex: 0 0 70%;
+}
+</style>
