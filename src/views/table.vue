@@ -69,6 +69,7 @@ import {getCourseNum} from "../api/index";
 import {fetchDataLimit} from "../api/index";
 import {deleteCourse,searchCourse} from "../api/index";
 import * as XLSX from "xlsx";
+import router from "../router";
 
 interface TableItem {
 	cno: string;
@@ -162,7 +163,7 @@ const handleEdit = (index: number, row: any) => {
 	idx = index;
 	form.name = row.name;
 	form.address = row.address;
-	editVisible.value = true;
+	router.push('/CourseDetail?cno='+row.cno)
 };
 /*
 const saveEdit = () => {

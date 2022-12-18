@@ -146,6 +146,15 @@ const routes: RouteRecordRaw[] = [
                 },
                 component: () => import(/* webpackChunkName: "import" */ '../views/newCourse.vue'),
             },
+            {
+                path: '/CourseDetail',
+                name: 'CourseDetail',
+                meta: {
+                    title: '课程详情',
+                    permiss: '2',
+                },
+                component: () => import(/* webpackChunkName: "import" */ '../views/CourseDetail.vue'),
+            },
         ],
     },
     {
@@ -172,7 +181,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
+    document.title = `${to.meta.title} | NWPU-Survival-Manual`;
     const role = localStorage.getItem('ms_username');
     const permiss = usePermissStore();
     if (!role && to.path !== '/login') {
