@@ -33,6 +33,12 @@ export const searchCourse = (cname:string, tname:string, dname:string) =>{
         method: 'get',
     })
 };
+export const searchCourseRegional = (cname:string, tname:string, dname:string, start:string, offset:string) =>{
+    return request({
+        url: 'http://localhost:8088/course/search/limit?cname='+cname+'&tname='+tname+'&dname='+dname+'&start='+start+'&offset='+offset,
+        method: 'get',
+    })
+};
 export const selectCourseByCno = (cno:string) =>{
     return request({
         url: 'http://localhost:8088/course/search?cno='+cno,

@@ -64,7 +64,7 @@
 import { ref, reactive } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
-import {fetchData, selectCourseByCno} from '../api/index';
+import {fetchData, searchCourseRegional, selectCourseByCno} from '../api/index';
 import {getCourseNum} from "../api/index";
 import {fetchDataLimit} from "../api/index";
 import {deleteCourse,searchCourse} from "../api/index";
@@ -117,10 +117,13 @@ const handleSearch = () => {
     ElMessage.success('未设置搜索条件');
     getData()
   }else{
+
     searchCourse(query.cname, query.tname, query.dname).then(res=>{
       ElMessage.success(res.data.message);
-      tableData.value = res.data.data;
-      pageTotal.value = tableData.value.length
+      pageTotal.value = res.data.data.length
+    })
+    searchCourseRegional(query.cname, query.tname, query.dname,(0).toString(), (10).toString()).then(res=>{
+      tableData.value = res.data.data
     })
   }
 
@@ -129,7 +132,8 @@ const handleSearch = () => {
 // 分页导航
 const handlePageChange = (val: number) => {
 	query.pageIndex = val;
-  fetchDataLimit((query.pageSize*(val-1)).toString(), (query.pageSize).toString()).then(res=>{
+  searchCourseRegional(query.cname, query.tname, query.dname,(query.pageSize*(val-1)).toString(), (query.pageSize).toString()).then(res=>{
+      console.log(res.data.data)
       tableData.value = res.data.data;
 
   })
