@@ -59,7 +59,7 @@ const items = [
     {
         icon: 'Odometer',
         index: '/dashboard',
-        title: '系统首页',
+        title: '课程关系图',
         permiss: '1',
     },
     {
@@ -88,13 +88,8 @@ const items = [
         subs: [
             {
                 index: '/form',
-                title: '基本表单',
+                title: '评论审核',
                 permiss: '5',
-            },
-            {
-                index: '/upload',
-                title: '文件上传',
-                permiss: '6',
             },
         ],
     },

@@ -62,3 +62,17 @@ export const selectCourseByLabel = (label:string)=>{
         method: 'get',
     })
 }
+
+export const getRelationByCnos = (first:string, second:string)=>{
+    return request({
+        url:'http://localhost:8088/course/relation?first='+first+'&second='+second,
+        method: 'get',
+    })
+}
+
+export const getRelationByNames = (first:string, second:string)=>{
+    return request({
+        url:'http://localhost:8088/course/relation/name?first='+first+'&second='+second,
+        method: 'get',
+    })
+}
