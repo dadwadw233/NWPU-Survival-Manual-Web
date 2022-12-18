@@ -64,7 +64,7 @@
 import { ref, reactive } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
-import { fetchData } from '../api/index';
+import {fetchData, selectCourseByCno} from '../api/index';
 import {getCourseNum} from "../api/index";
 import {fetchDataLimit} from "../api/index";
 import {deleteCourse,searchCourse} from "../api/index";
@@ -163,7 +163,17 @@ const handleEdit = (index: number, row: any) => {
 	idx = index;
 	form.name = row.name;
 	form.address = row.address;
-	router.push('/CourseDetail?cno='+row.cno)
+  selectCourseByCno(row.cno).then(res=>{
+    if(res.data.code==200){
+      ElMessage.success( "详情拉取成功")
+      let detail = JSON.stringify(res.data.data)
+      router.push('/CourseDetail?detail='+detail)
+    }else{
+      console.log(res.data.code)
+      ElMessage.error("详情拉取失败")
+    }
+
+  })
 };
 /*
 const saveEdit = () => {

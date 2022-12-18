@@ -1,10 +1,9 @@
 <template>
-  <template v-if="show">
-    <el-descriptions
+  <el-descriptions
         class="margin-top"
         title="课程详情"
         direction="vertical"
-        :column="1"
+        :column="2"
         border
     >
       <template #extra>
@@ -16,9 +15,10 @@
             <el-icon :style="iconStyle">
               <user />
             </el-icon>
-            课程名称
+            课程号
           </div>
         </template>
+        {{detail[0]['cno']}}
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>
@@ -26,10 +26,10 @@
             <el-icon :style="iconStyle">
               <iphone />
             </el-icon>
-            Telephone
+            课程名称
           </div>
         </template>
-        18100000000
+        {{detail[0]['cname']}}
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>
@@ -37,21 +37,32 @@
             <el-icon :style="iconStyle">
               <location />
             </el-icon>
-            Place
+            授课教师
           </div>
         </template>
-        Suzhou
+        {{detail[0]['tname']}}
       </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          <el-icon :style="iconStyle">
+            <office-building />
+          </el-icon>
+          课程类别
+        </div>
+      </template>
+      {{detail[0]['cclf']}}
+    </el-descriptions-item>
       <el-descriptions-item>
         <template #label>
           <div class="cell-item">
             <el-icon :style="iconStyle">
               <tickets />
             </el-icon>
-            Remarks
+            开课部门
           </div>
         </template>
-        <el-tag size="small">School</el-tag>
+        {{detail[0]['dname']}}
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>
@@ -59,11 +70,66 @@
             <el-icon :style="iconStyle">
               <office-building />
             </el-icon>
-            Address
+            学分
           </div>
         </template>
-        No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
+        {{detail[0]['credit']}}
       </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          <el-icon :style="iconStyle">
+            <office-building />
+          </el-icon>
+          开课校区
+        </div>
+      </template>
+      {{detail[0]['campus']}}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          <el-icon :style="iconStyle">
+            <office-building />
+          </el-icon>
+          人数上限
+        </div>
+      </template>
+      {{detail[0]['slimit']}}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          <el-icon :style="iconStyle">
+            <office-building />
+          </el-icon>
+          学时
+        </div>
+      </template>
+      {{detail[0]['length']}}
+    </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <el-icon :style="iconStyle">
+              <office-building />
+            </el-icon>
+            上课时间安排
+          </div>
+        </template>
+        {{detail[0]['csche']}}
+      </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <div class="cell-item">
+          <el-icon :style="iconStyle">
+            <office-building />
+          </el-icon>
+          详细介绍
+        </div>
+      </template>
+      {{detail[0]['description']}}
+    </el-descriptions-item>
     </el-descriptions>
 
     <div class="container">
@@ -74,8 +140,6 @@
       <div class="mgb20" ref="editor"></div>
       <el-button type="primary" @click="syncHTML">提交</el-button>
     </div>
-  </template>
-  <template v-else>加载中</template>
 
 </template>
 
@@ -91,9 +155,10 @@ import {fetchData, selectCourseByCno} from '../api/index';
 import {getCourseNum} from "../api/index";
 import {fetchDataLimit} from "../api/index";
 import {deleteCourse,searchCourse} from "../api/index";
-const cno = router.currentRoute.value.query['cno']
+// @ts-ignore
+const detail = JSON.parse(router.currentRoute.value.query['detail'])
+console.log(detail)
 
-console.log(cno)
 
 
 
@@ -114,10 +179,8 @@ interface TableItem {
   description: string;
 }
 
-let tableData: any[] = []
-let show = false
 
-
+/*
 const getData = () => {
 // @ts-ignore
   selectCourseByCno(cno.toString()).then(res => {
@@ -125,6 +188,8 @@ const getData = () => {
     tableData = res.data.data;
   });
 };
+*/
+
 async function waitAsync (ms: number): Promise<void> {
   return new Promise<void>((resolve) => {
     setTimeout(resolve, ms)
@@ -143,13 +208,14 @@ const content = reactive({
 });
 let instance: any;
 onBeforeMount(()=>{
+  /*
   waitAsync(100).then(res=>{
     getData();
     waitAsync(100).then(res=>{
       console.log(tableData.length)
 
     })
-  })
+  })*/
 })
 onMounted(() => {
 
