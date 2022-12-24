@@ -135,7 +135,6 @@
     <div class="container">
       <div class="plugins-tips">
         发表评论
-        <a href="https://www.wangeditor.com/doc/" target="_blank">wangEditor</a>
       </div>
       <div class="mgb20" ref="editor"></div>
       <el-button type="primary" @click="syncHTML">提交</el-button>
@@ -151,10 +150,10 @@ import { getCurrentInstance } from "vue";
 import router from "../router";
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
-import {fetchData, selectCourseByCno} from '../api/index';
+import {addNewComment, fetchData, passComment, selectCourseByCno} from '../api/index';
 import {getCourseNum} from "../api/index";
 import {fetchDataLimit} from "../api/index";
-import {deleteCourse,searchCourse} from "../api/index";
+import {deleteCourse,searchCourse, getCommentNumByCno} from "../api/index";
 // @ts-ignore
 const detail = JSON.parse(router.currentRoute.value.query['detail'])
 console.log(detail)
@@ -203,8 +202,14 @@ async function waitAsync (ms: number): Promise<void> {
 
 const editor = ref(null);
 const content = reactive({
-  html: '',
-  text: ''
+  detail: '',
+  cno:'',
+  cid:'',
+  sno:'2020303030',
+  time:'',
+  isselect:0,
+  sscore:0,
+  visible:0,
 });
 let instance: any;
 onBeforeMount(()=>{
@@ -228,8 +233,27 @@ onBeforeUnmount(() => {
   instance = null;
 });
 const syncHTML = () => {
-  content.html = instance.txt.html();
-  console.log(content.html);
+  content.detail =  instance.txt.text()
+  content.cno = detail[0]['cno']
+  var date = new Date()
+  console.log(date.toLocaleDateString())
+  content.time = date.toLocaleDateString()
+  getCommentNumByCno(content.cno).then(res=>{
+    content.cid = res.data.data+1
+    console.log(content.cid)
+  })
+  ElMessageBox.confirm('确定提交评论吗？', '提示', {
+    type: 'warning'
+  })
+      .then(() => {
+        addNewComment(content).then(res=>{
+          if (res.data.code == 200){
+            ElMessage.success(res.data.message);
+          }
+          console.log(res.data)
+        })
+      })
+      .catch(() => {});
 };
 </script>
 

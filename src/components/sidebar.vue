@@ -87,7 +87,7 @@ const items = [
         permiss: '4',
         subs: [
             {
-                index: '/form',
+                index: '/ManageComment',
                 title: '评论审核',
                 permiss: '5',
             },

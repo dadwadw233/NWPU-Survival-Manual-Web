@@ -155,6 +155,15 @@ const routes: RouteRecordRaw[] = [
                 },
                 component: () => import(/* webpackChunkName: "import" */ '../views/CourseDetail.vue'),
             },
+            {
+                path: '/ManageComment',
+                name: 'ManageComment',
+                meta: {
+                    title: '评论管理',
+                    permiss: '2',
+                },
+                component: () => import(/* webpackChunkName: "import" */ '../views/ManageComment.vue'),
+            },
         ],
     },
     {

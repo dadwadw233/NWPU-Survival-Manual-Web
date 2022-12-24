@@ -12,10 +12,37 @@ export const fetchDataLimit = (a:string,b:string) => {
         method: 'get'
     });
 };
+
+export const getCommentLimit = (a:string,b:string) => {
+    return request({
+        url: 'http://localhost:8088/comment/limit/manager?start='+a+'&offset='+b,
+        method: 'get'
+    });
+};
 export const getCourseNum = () =>{
     return request({
         url: 'http://localhost:8088/course/getnum',
         method: 'get'
+    })
+};
+
+export const getCommentNum = () =>{
+    return request({
+        url: 'http://localhost:8088/comment/number',
+        method: 'get'
+    })
+};
+export const getCommentNumByCno = (cno:string) =>{
+    return request({
+        url: 'http://localhost:8088/course/comment/num?cno='+cno,
+        method: 'get'
+    })
+};
+export const addNewComment = (comment:object) =>{
+    return request({
+        url: 'http://localhost:8088/comment/new',
+        method: 'post',
+        data:comment
     })
 };
 export const deleteCourse = (cno:string) =>{
@@ -24,6 +51,27 @@ export const deleteCourse = (cno:string) =>{
         method: 'post',
         data:{
             'cno':cno
+        }
+    })
+};
+export const deleteComment = (cno:string, cid:number) =>{
+    return request({
+        url: 'http://localhost:8088/comment/delete',
+        method: 'post',
+        data:{
+            'cno':cno,
+            'cid':cid
+        }
+    })
+};
+
+export const passComment = (cno:string, cid:number) =>{
+    return request({
+        url: 'http://localhost:8088/comment/pass',
+        method: 'post',
+        data:{
+            'cno':cno,
+            'cid':cid
         }
     })
 };
